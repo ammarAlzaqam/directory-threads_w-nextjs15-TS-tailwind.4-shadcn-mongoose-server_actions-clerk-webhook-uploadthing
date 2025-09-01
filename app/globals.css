@@ -6,8 +6,9 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --color-primary-500: #6b63e6;
-  --color-secondary-500: #e6a81d;
+  --color-primary-500: #877eff;
+  --color-secondary-500: #ffb620;
+
   --color-blue: #0078cc;
   --color-logout-btn: #ff4b4b;
   --color-navbar-menu: rgba(255, 255, 255, 0.1);
@@ -31,8 +32,8 @@
 }
 
 .dark {
-  --color-primary-500: #877eff;
-  --color-secondary-500: #ffb620;
+  --color-primary-500: #6b63e6;
+  --color-secondary-500: #e6a81d;
   --color-blue: #0095f6;
   --color-logout-btn: #ff5a5a;
   --color-navbar-menu: #10101299;

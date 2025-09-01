@@ -11,6 +11,7 @@ import {
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { Inter } from "next/font/google";
+import toast, { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -62,6 +63,17 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             }}
           >
             {children}
+            <Toaster
+              position="top-center"
+              reverseOrder={true}
+              toastOptions={{
+                duration: 3000,
+                style: {
+                  background: "var(--color-dark-1)",
+                  color: "var(--color-light-1)",
+                },
+              }}
+            />
           </ClerkProvider>
         </ThemeContext.Provider>
       </body>

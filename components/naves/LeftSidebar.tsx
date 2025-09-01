@@ -37,7 +37,7 @@ export default function LeftSidebar() {
                 width={24}
                 height={24}
               />
-              <p className="max-lg:hidden">{link.label}</p>
+              <p className="text-light-2 max-lg:hidden">{link.label}</p>
             </Link>
           );
         })}
@@ -51,10 +51,10 @@ export default function LeftSidebar() {
         <ClerkLoaded>
           <SignedIn>
             <SignOutButton redirectUrl="/sign-in">
-              <div className="flex items-center gap-4 p-4">
+              <div className="flex items-center gap-4 p-4 cursor-pointer ">
                 <Image
                   src="/assets/logout.svg"
-                  className="cursor-pointer p-0.5 rounded-full bg-light-3 w-[28px] h-[28px] dark:w-[24px] dark:h-[24px] dark:bg-transparent dark:p-0"
+                  className="p-0.5 rounded-full bg-light-3 w-[28px] h-[28px] dark:w-[24px] dark:h-[24px] dark:bg-transparent dark:p-0"
                   alt="Logout"
                   width={24}
                   height={24}

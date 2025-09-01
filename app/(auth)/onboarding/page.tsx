@@ -1,9 +1,10 @@
 import AccountProfile from "@/components/forms/AccountProfile";
+import { fetchUser } from "@/lib/actions/user.action";
 import { currentUser } from "@clerk/nextjs/server";
 
 export default async function OnboardingPage() {
   const user = await currentUser();
-  const userInfo: any = {};
+  const userInfo = await fetchUser(user?.id!);
 
   const userData = {
     id: userInfo?.id || user?.id || "",
@@ -17,7 +18,7 @@ export default async function OnboardingPage() {
   return (
     <section className="mx-auto flex max-w-3xl flex-col px-7 py-10 xs:px-10">
       <h1 className="text-heading2-bold">Onboarding</h1>
-      <p className="text-subtle-medium mt-5">
+      <p className="text-base-regular mt-3 text-light-2">
         Complete your profile now to use Threads
       </p>
 

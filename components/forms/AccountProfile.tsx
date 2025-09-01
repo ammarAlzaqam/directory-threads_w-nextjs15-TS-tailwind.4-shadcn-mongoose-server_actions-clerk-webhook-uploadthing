@@ -19,6 +19,8 @@ import { Button } from "../ui/button";
 import { Shell } from "lucide-react";
 import { useUploadThing } from "@/lib/uploadthing";
 import { isBase64Image } from "@/lib/utils";
+import { usePathname } from "next/navigation";
+import { updateUser } from "@/lib/actions/user.action";
 
 interface Props {
   user: {
@@ -35,6 +37,7 @@ interface Props {
 export default function AccountProfile({ user, btnTitle }: Props) {
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
+  const path = usePathname();
 
   const { startUpload } = useUploadThing("media");
 
@@ -48,25 +51,35 @@ export default function AccountProfile({ user, btnTitle }: Props) {
     resolver: zodResolver(UserValidationSchema),
   });
 
-  const handleSubmit = form.handleSubmit(async (values) => {
-    try {
-      setLoading(true);
-      const hasImgChange = isBase64Image(values.profile_photo);
-      if(hasImgChange) {
-        const imgRes = await startUpload(files);
-        if(imgRes && imgRes[0]) {
-          values.profile_photo = imgRes[0].ufsUrl;
-        } else {
-          values.profile_photo = user?.image || "";
+  const handleSubmit = form.handleSubmit(
+    async ({ username, name, profile_photo, bio }) => {
+      try {
+        setLoading(true);
+        const hasImgChange = isBase64Image(profile_photo);
+        if (hasImgChange) {
+          const imgRes = await startUpload(files);
+          if (imgRes && imgRes[0]) {
+            profile_photo = imgRes[0].ufsUrl;
+          } else {
+            profile_photo = user?.image || "";
+          }
         }
-      }
 
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
+        await updateUser({
+          userId: user?.id,
+          username,
+          name,
+          image: profile_photo,
+          bio,
+          path,
+        });
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setLoading(false);
+      }
     }
-  });
+  );
 
   const handleImage = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -112,7 +125,7 @@ export default function AccountProfile({ user, btnTitle }: Props) {
                   />
                 )}
               </FormLabel>
-              <FormControl className="flex-1 text-base-semibold !text-gray-300">
+              <FormControl className="flex-1 text-base-semibold !text-gray-500 dark:text-gray-300">
                 <Input
                   type="file"
                   accept="image/*"
