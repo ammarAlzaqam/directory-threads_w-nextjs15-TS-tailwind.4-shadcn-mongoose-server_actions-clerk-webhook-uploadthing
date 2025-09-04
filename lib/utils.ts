@@ -40,3 +40,12 @@ export function formatThreadCount(count: number): string {
     return `${threadCount} ${threadWord}`;
   }
 }
+
+export function formatCount(count: number, text: string, texts = ""): string {
+  if (count === 0) {
+    return "";
+  } else {
+    const threadWord = count === 1 ? text : texts || `${text}s`;
+    return `${count} ${threadWord}`;
+  }
+}

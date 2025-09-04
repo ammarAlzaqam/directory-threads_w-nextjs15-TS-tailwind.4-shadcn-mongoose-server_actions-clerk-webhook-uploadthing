@@ -21,6 +21,7 @@ import { useUploadThing } from "@/lib/uploadthing";
 import { isBase64Image } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { updateUser } from "@/lib/actions/user.action";
+import toast from "react-hot-toast";
 
 interface Props {
   user: {
@@ -73,6 +74,8 @@ export default function AccountProfile({ user, btnTitle }: Props) {
           bio,
           path,
         });
+
+        toast.success("Profile updated successfully");
       } catch (e) {
         console.log(e);
       } finally {

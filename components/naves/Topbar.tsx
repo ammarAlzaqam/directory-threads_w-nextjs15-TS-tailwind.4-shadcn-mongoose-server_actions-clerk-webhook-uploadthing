@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from "@/app/layout";
+import { fetchUser } from "@/lib/actions/user.action";
 import {
   ClerkLoaded,
   ClerkLoading,
@@ -9,13 +10,33 @@ import {
   SignedOut,
   SignInButton,
   SignOutButton,
+  useUser,
 } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 import { Moon as DarkIcon, Sun as LightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Topbar() {
+  const [userImg, setUserImg] = useState<any>(null);
+  const [isMount, setIsMount] = useState(false);
+  const { user, isLoaded } = useUser();
   const { darkMode, setDarkMode } = useTheme();
+  useEffect(() => {
+    async function getUserImg() {
+      if (user) {
+        const { image } = await fetchUser(user.id);
+        setUserImg(image);
+      }
+    }
+    getUserImg();
+    setIsMount(true);
+  }, [isLoaded, user]);
+
+  if (!isLoaded || !isMount)
+    return <div className="topbar h-16 w-full bg-skeleton animate-pulse" />;
+
   return (
     <nav className="topbar">
       {/*//! Logo */}
@@ -67,7 +88,24 @@ export default function Topbar() {
                 />
               </SignOutButton>
             </div>
-            <OrganizationSwitcher />
+            <div className="relative">
+              <OrganizationSwitcher
+                appearance={{
+                  elements: {
+                    organizationSwitcherTrigger: "py-2 px-4",
+                  },
+                }}
+              />
+              <div className="absolute left-1.5 top-[50%] translate-y-[-50%] rounded-md overflow-hidden">
+                <Image
+                  src={userImg || "/assets/user.svg"}
+                  alt="profile_image"
+                  width={24}
+                  height={24}
+                  className="bg-dark-3 object-cover"
+                />
+              </div>
+            </div>
           </div>
         </SignedIn>
 

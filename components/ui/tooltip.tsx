@@ -58,19 +58,19 @@ function TooltipContent({
   );
 }
 
-export default function TipTitle ({
+export default function TipTitle({
   children,
-  content,
+  message,
 }: {
   children: React.ReactNode;
-  content: string;
+  message: string;
 }) {
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent>
-          <p>{content}</p>
+          <p>{message}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
