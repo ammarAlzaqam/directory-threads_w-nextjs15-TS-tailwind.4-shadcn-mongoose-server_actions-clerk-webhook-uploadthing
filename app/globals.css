@@ -219,7 +219,7 @@
   }
 
   .topbar {
-    @apply fixed top-0 z-30 flex w-full items-center justify-between bg-dark-2 px-6 py-3;
+    @apply fixed top-0 z-30 flex w-full items-center justify-between bg-dark-2 px-3 xs:px-6 py-3;
   }
 
   .bottombar {
@@ -252,6 +252,18 @@
 }
 
 @layer utilities {
+  .animate-open_close {
+    @apply absolute top-0 transition duration-500 w-6 h-6;
+  }
+
+  .animate-open_close[data-state="open"] {
+    @apply opacity-100 rotate-0 scale-100;
+  }
+
+  .animate-open_close[data-state="close"] {
+    @apply opacity-0 rotate-90 scale-0;
+  }
+
   .animate-zoom-in {
     @apply animate-in zoom-in-90 duration-500;
   }

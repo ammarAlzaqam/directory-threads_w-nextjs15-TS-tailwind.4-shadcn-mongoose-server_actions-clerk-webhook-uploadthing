@@ -1,11 +1,17 @@
 import ThreadCard from "@/components/cards/ThreadCard";
+import PaginationPage from "@/components/ui/pagination";
 import { fetchPosts } from "@/lib/actions/thread.action";
 import { fetchUser } from "@/lib/actions/user.action";
 import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 
-export default async function App() {
-  const { threads, numOfPages } = await fetchPosts(3);
+export default async function App({
+  searchParams,
+}: {
+  searchParams: Promise<{ pageNumber: string }>;
+}) {
+  const { pageNumber } = await searchParams;
+  const { threads, numOfPages } = await fetchPosts(parseInt(pageNumber));
   if (threads.length === 0) {
     return <p className="no-result">No threads</p>;
   }
@@ -19,6 +25,7 @@ export default async function App() {
           <ThreadCard user={userInfo} key={thread._id} thread={thread} />
         ))}
       </section>
+      <PaginationPage nofPages={numOfPages} pageNumber={parseInt(pageNumber)} />
     </main>
   );
 }

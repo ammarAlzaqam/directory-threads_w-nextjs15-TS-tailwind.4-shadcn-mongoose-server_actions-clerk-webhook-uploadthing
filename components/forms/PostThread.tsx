@@ -73,8 +73,8 @@ export default function PostThread({ userId }: { userId: string }) {
 
         <Button
           disabled={loading}
-          className={`cursor-pointer 
-            ${loading ? "text-gray-300" : "bg-primary-500"}
+          className={`cursor-pointer bg-primary-500 text-light-2
+            ${loading && "text-gray-300 bg-gray-1"}
             `}
         >
           {loading ? <Shell className="animate-spin" /> : "Post Thread"}

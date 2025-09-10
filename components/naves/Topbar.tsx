@@ -1,6 +1,6 @@
 "use client";
 
-import { useTheme } from "@/app/layout";
+import { useTheme } from "../providers/ThemeProvider";
 import { fetchUser } from "@/lib/actions/user.action";
 import {
   ClerkLoaded,
@@ -12,7 +12,6 @@ import {
   SignOutButton,
   useUser,
 } from "@clerk/nextjs";
-import { currentUser } from "@clerk/nextjs/server";
 import { Moon as DarkIcon, Sun as LightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -56,17 +55,22 @@ export default function Topbar() {
       {/*//! Theme Mode */}
       <div className="flex items-center gap-1">
         <button
-          className="p-2 cursor-pointer"
+          className="relative w-6 h-6 cursor-pointer"
           onClick={() => {
-            setDarkMode(!darkMode);
-            localStorage.setItem("theme", darkMode ? "light" : "dark");
+            setDarkMode((prev: any) => {
+              localStorage.setItem("theme", prev ? "light" : "dark");
+              return !prev;
+            });
           }}
         >
-          {darkMode ? (
-            <LightIcon className="text-secondary-500" />
-          ) : (
-            <DarkIcon className="text-primary-500" />
-          )}
+          <LightIcon
+            data-state={darkMode ? "open" : "close"}
+            className="text-secondary-500 animate-open_close"
+          />
+          <DarkIcon
+            data-state={darkMode ? "close" : "open"}
+            className="text-primary-500 animate-open_close"
+          />
         </button>
       </div>
 
