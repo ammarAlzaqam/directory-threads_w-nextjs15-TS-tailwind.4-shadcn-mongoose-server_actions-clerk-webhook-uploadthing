@@ -1,4 +1,4 @@
-import { formatCount } from "@/lib/utils";
+import { formatCount, formatDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import TipTitle from "../ui/tooltip";
@@ -101,12 +101,8 @@ export default function ThreadCard({ thread, isComment = false, user }: Props) {
           <p className="mt-2 text-small-regular text-light-2">{text}</p>
 
           {/*// Icons */}
-          <div
-            className={`flex flex-col mt-5 gap-3 ${
-              comments.length && !isComment && !parentId && "mb-5"
-            }`}
-          >
-            <div className="flex gap-3.5">
+          <div className={`flex flex-col mt-5 gap-3`}>
+            <div className="flex gap-1 xs:gap-3.5">
               <Image
                 src="/assets/heart-gray.svg"
                 alt="heart"
@@ -114,12 +110,11 @@ export default function ThreadCard({ thread, isComment = false, user }: Props) {
                 height={24}
                 className="cursor-pointer object-cover"
               />
-              <Link href={`/thread/${threadId}`}>
+              <Link className="relative w-6 h-6" href={`/thread/${threadId}`}>
                 <Image
                   src="/assets/reply.svg"
                   alt="reply"
-                  width={24}
-                  height={24}
+                  fill
                   className="object-contain"
                 />
               </Link>
@@ -152,7 +147,7 @@ export default function ThreadCard({ thread, isComment = false, user }: Props) {
 
       {/*//! Show replies data */}
       {!isComment && !parentId && comments && (
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center mt-3">
           {commentsUniqueAuthor.length < 12 && (
             <div className="flex items-center -space-x-3">
               {commentsUniqueAuthor.map((author) => (
@@ -163,7 +158,7 @@ export default function ThreadCard({ thread, isComment = false, user }: Props) {
                       alt="profile-img"
                       width={28}
                       height={28}
-                      className="rounded-full hover:scale-150 hover:z-50 transition"
+                      className="rounded-full hover:scale-130 hover:z-50 transition"
                     />
                   </TipTitle>
                 </Link>
@@ -177,6 +172,26 @@ export default function ThreadCard({ thread, isComment = false, user }: Props) {
             {formatCount(comments.length, "reply", "replies")}
           </Link>
         </div>
+      )}
+
+      {/*//! Show community details */}
+      {!isComment && !parentId && community && (
+        <Link
+          href={`/communities/${community.id}`}
+          className="mt-5 flex gap-1 items-center"
+        >
+          <p className="text-tiny-medium xs:text-subtle-medium text-gray-1">
+            {formatDateString(createdAt)} - {community.name} <span className="max-xs:hidden">Community</span>
+          </p>
+          <div className="relative w-5 h-5">
+            <Image
+              src={community.image}
+              alt="community_image"
+              fill
+              className="rounded-full object-cover"
+            />
+          </div>
+        </Link>
       )}
     </article>
   );

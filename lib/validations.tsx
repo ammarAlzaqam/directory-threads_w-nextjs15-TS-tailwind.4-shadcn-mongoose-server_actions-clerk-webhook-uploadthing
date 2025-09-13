@@ -21,3 +21,10 @@ export const CommentValidationSchema = z.object({
     .min(3, { message: "Minimum 3 characters" })
     .max(300, { message: "Maximum 300 characters" }),
 });
+
+export const CommunityValidationSchema = z.object({
+  bio: z
+    .string()
+    .min(3, { message: "Minimum 3 characters" })
+    .max(300, { message: "Maximum 300 characters" }),
+});

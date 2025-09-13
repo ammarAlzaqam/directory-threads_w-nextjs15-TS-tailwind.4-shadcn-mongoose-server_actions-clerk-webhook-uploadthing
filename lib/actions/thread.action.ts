@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import Thread from "../models/thread.model";
 import User from "../models/user.model";
 import connectDB from "../mongoose";
+import Community from "../models/community.model";
 
 interface CreateThreadParams {
   text: string;
@@ -21,10 +22,12 @@ export async function createThread({
   try {
     await connectDB();
 
+    const community = await Community.findOne({ id: communityId }, { _id: 1 });
+
     const createThread = await Thread.create({
       text,
       author,
-      community: null,
+      community: community?._id || null,
     });
 
     await User.findByIdAndUpdate(author, {
@@ -50,6 +53,7 @@ export async function fetchPosts(
       .skip(skipAmount)
       .limit(pageSize)
       .populate({ path: "author", model: User })
+      .populate({ path: "community", model: Community })
       .populate({
         path: "children",
         model: Thread,
@@ -77,6 +81,11 @@ export async function fetchThreadById(threadId: string) {
     await connectDB();
     const thread = await Thread.findById(threadId)
       .populate({ path: "author", model: User, select: "id _id name image" })
+      .populate({
+        path: "community",
+        model: Community,
+        select: "_id id name image",
+      })
       .populate({
         path: "children",
         model: Thread,
@@ -157,10 +166,23 @@ export async function deleteThread(threadId: string, path: string) {
     ];
 
     const uniqueAuthorThreadsIds = [
-      ...new Set([
-        ...descendantsThread.map((descendantThread) => descendantThread.author),
-        thread.author,
-      ]),
+      ...new Set(
+        [
+          ...descendantsThread.map(
+            (descendantThread) => descendantThread.author
+          ),
+          thread.author,
+        ].filter((id) => id !== undefined && id !== null)
+      ),
+    ];
+
+    const uniqueCommunityThreadsIds = [
+      ...new Set(
+        [
+          ...descendantsThread.map((thread) => thread.community),
+          thread.community,
+        ].filter((id) => id !== undefined && id !== null)
+      ),
     ];
 
     await Thread.deleteMany({ _id: { $in: allThreadsIds } });
@@ -171,6 +193,12 @@ export async function deleteThread(threadId: string, path: string) {
         $pull: { threads: { $in: allThreadsIds } },
       }
     );
+
+    await Community.updateMany(
+      {_id: {$in: uniqueCommunityThreadsIds}}, {
+        $pull: {threads: { $in: descendantsThread}}
+      }
+    )
 
     revalidatePath(path);
   } catch (error: any) {

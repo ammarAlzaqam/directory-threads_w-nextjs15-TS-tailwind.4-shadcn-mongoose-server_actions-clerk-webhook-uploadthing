@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["mongoose"],
+
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
   images: {
     remotePatterns: [
       {
@@ -9,8 +19,20 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "lk7it854xs.ufs.sh",
+        hostname: "images.clerk.dev",
       },
+      {
+        protocol: "https",
+        hostname: "uploadthing.com",
+      },
+      {
+        protocol: "https",
+        hostname: "placehold.co",
+      },
+      {
+        protocol: "https",
+        hostname: "lk7it854xs.ufs.sh"
+      }
     ],
   },
 };

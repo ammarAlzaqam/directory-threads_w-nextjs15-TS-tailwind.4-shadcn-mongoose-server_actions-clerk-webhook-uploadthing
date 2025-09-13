@@ -19,7 +19,7 @@ export default async function ActivityPage() {
           <Link
             href={`/thread/${activity.parentId}`}
             key={activity._id}
-            className="px-7 py-4 flex items-center gap-2 bg-dark-3"
+            className="px-4 xs:px-7 py-4 flex items-center gap-2 bg-dark-3"
           >
             {/*//! Author image */}
             <div className="relative h-5 w-5">
@@ -35,7 +35,7 @@ export default async function ActivityPage() {
             <p className="text-small-medium text-primary-500">
               {activity.author.name}
             </p>
-            <p className="text-small-medium">replied to your thread</p>
+            <p className="text-small-medium line-clamp-1">replied to your thread</p>
           </Link>
         ))}
       </div>

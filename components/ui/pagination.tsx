@@ -156,7 +156,9 @@ export default function PaginationPage({
   const currentPage = Math.max(Number(pageNumber) || 1, 1);
   const router = useRouter();
   const getQuery = (pageNumber: number) =>
-    `?pageNumber=${pageNumber}&query=${query}`;
+    query
+      ? `?pageNumber=${pageNumber}&query=${query}`
+      : `?pageNumber=${pageNumber}`;
   return (
     <Pagination className="mt-14">
       <PaginationContent>
@@ -164,6 +166,7 @@ export default function PaginationPage({
         {currentPage > 1 && (
           <PaginationItem>
             <PaginationPrevious
+              className="cursor-pointer"
               onClick={() => router.push(getQuery(currentPage - 1))}
             />
           </PaginationItem>
@@ -190,6 +193,7 @@ export default function PaginationPage({
         {currentPage < nofPages && (
           <PaginationItem>
             <PaginationNext
+              className="cursor-pointer"
               onClick={() => router.push(getQuery(currentPage + 1))}
             />
           </PaginationItem>

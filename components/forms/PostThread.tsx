@@ -18,11 +18,14 @@ import { Shell } from "lucide-react";
 import { createThread } from "@/lib/actions/thread.action";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useOrganization } from "@clerk/nextjs";
 
 export default function PostThread({ userId }: { userId: string }) {
   const [loading, setLoading] = useState(false);
   const path = usePathname();
   const router = useRouter();
+  const { organization } = useOrganization();
+
   const form = useForm({
     defaultValues: {
       text: "",
@@ -37,7 +40,7 @@ export default function PostThread({ userId }: { userId: string }) {
       await createThread({
         text,
         author: accountId,
-        communityId: null,
+        communityId: organization?.id || null,
         path,
       });
       toast.success("Thread created successfully");
@@ -74,6 +77,7 @@ export default function PostThread({ userId }: { userId: string }) {
         <Button
           disabled={loading}
           className={`cursor-pointer bg-primary-500 text-light-2
+            hover:!bg-primary-500/80
             ${loading && "text-gray-300 bg-gray-1"}
             `}
         >

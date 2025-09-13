@@ -5,11 +5,14 @@ import User from "../models/user.model";
 import connectDB from "../mongoose";
 import Thread from "../models/thread.model";
 import { FilterQuery } from "mongoose";
+import Community from "../models/community.model";
 
 export async function fetchUser(userId: string) {
   try {
     await connectDB();
-    const user = await User.findOne({ id: userId }).lean();
+    const user = await User.findOne({ id: userId })
+      .populate({ path: "communities", model: Community })
+      .lean();
     return user ? JSON.parse(JSON.stringify(user)) : null;
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
@@ -66,6 +69,11 @@ export async function fetchUserPosts(userId: string) {
         path: "author",
         model: User,
         select: "_id id name image",
+      })
+      .populate({
+        path: "community",
+        model: Community,
+        select: "name id _id image",
       })
       .populate({
         path: "children",
@@ -144,7 +152,7 @@ export async function fetchAllUsers({
     const totalUserCount = await User.countDocuments(query);
     const nofPages = Math.ceil(totalUserCount / pageSize);
 
-    return {users, nofPages};
+    return { users, nofPages };
   } catch (error: any) {
     throw new Error(`Failed to fetch users: ${error.message}`);
   }

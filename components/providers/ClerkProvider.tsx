@@ -19,7 +19,7 @@ export default function ClerkThemeProvider({
           colorPrimary: "var(--color-primary-500)",
           colorBackground: "var(--color-dark-2)",
           colorText: "var(--color-light-1)",
-          colorTextSecondary: "var(--color-light-3)",
+          colorTextSecondary: "var(--color-light-2)",
           colorInputBackground: "var(--color-dark-4)",
           colorInputText: "var(--color-light-1)",
         },
