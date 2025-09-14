@@ -26,7 +26,7 @@ export default async function CommunitiesPage() {
             userIdObject={userInfo._id}
           />
         ))}
-      </div> : <p className="no-result">No communities</p>}
+      </div> : <p className="no-result">No Communities</p>}
     </section>
     
   );

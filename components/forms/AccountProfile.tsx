@@ -19,7 +19,7 @@ import { Button } from "../ui/button";
 import { Shell } from "lucide-react";
 import { useUploadThing } from "@/lib/uploadthing";
 import { isBase64Image } from "@/lib/utils";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { updateUser } from "@/lib/actions/user.action";
 import toast from "react-hot-toast";
 
@@ -39,7 +39,7 @@ export default function AccountProfile({ user, btnTitle }: Props) {
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const path = usePathname();
-
+  const route = useRouter();
   const { startUpload } = useUploadThing("media");
 
   const form = useForm({
@@ -76,6 +76,7 @@ export default function AccountProfile({ user, btnTitle }: Props) {
         });
 
         toast.success("Profile updated successfully");
+        route.refresh();
       } catch (e) {
         console.log(e);
       } finally {

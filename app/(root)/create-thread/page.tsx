@@ -8,7 +8,7 @@ export default async function CreateThreadPage() {
   if (!user) return null;
 
   const userInfo = await fetchUser(user.id);
-  if (!userInfo.onboarded) redirect("/onboarding");
+  if (!userInfo?.onboarded) redirect("/onboarding");
 
   return (
     <section>

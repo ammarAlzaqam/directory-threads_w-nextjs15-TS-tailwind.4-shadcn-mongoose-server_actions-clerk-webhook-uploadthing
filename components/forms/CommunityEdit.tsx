@@ -9,7 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Parentheses, ShipWheel } from "lucide-react";
+import { ShipWheel } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { useState } from "react";
@@ -63,8 +63,8 @@ export default function CommunityEdit({
 
       set(true);
       toast.success("Community bio has been successfully modified");
-    } catch (error) {
-      toast.error("Failed to modify community bio");
+    } catch (error: any) {
+      toast.error(`Failed to modify community bio: ${error.message}`);
       console.log(error);
     } finally {
       setLoading(false);
