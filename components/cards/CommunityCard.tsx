@@ -48,7 +48,7 @@ export default function CommunityCard({ community, userIdObject }: Props) {
 
         {/*//! Bio (text, edit button) */}
         <div className="flex items-center gap-2">
-          <p className="text-subtle-medium text-gray-1">{community.bio}</p>
+          <p className="max-w-11/12 text-subtle-medium text-gray-1">{community.bio}</p>
           {community.createdBy.toString() === userIdObject && (
             <TipTitle message="Edit">
               <CommunityBioEdit
