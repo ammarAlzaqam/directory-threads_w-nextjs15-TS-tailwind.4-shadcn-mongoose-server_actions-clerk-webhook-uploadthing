@@ -60,7 +60,7 @@ export default function CommunityEdit({
         path,
       });
 
-      set(true);
+      set(false);
       toast.success("Community bio has been successfully modified");
     } catch (error: any) {
       toast.error(`Failed to modify community bio: ${error.message}`);

@@ -115,8 +115,7 @@ export async function updateCommunity({
         username,
         image,
         bio,
-      },
-      { new: true }
+      }
     );
 
     if (!updatedCommunity) {
@@ -125,7 +124,7 @@ export async function updateCommunity({
 
     if (path.includes("/communities")) revalidatePath(path);
 
-    return updatedCommunity;
+    return JSON.parse(JSON.stringify(updatedCommunity));
   } catch (error: any) {
     console.log(error);
     throw new Error(`Failed to update community: ${error.message}`);
