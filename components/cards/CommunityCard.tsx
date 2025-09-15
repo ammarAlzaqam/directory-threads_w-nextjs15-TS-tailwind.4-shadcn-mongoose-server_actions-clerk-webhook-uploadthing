@@ -52,7 +52,7 @@ export default function CommunityCard({ community, userIdObject }: Props) {
           {community.createdBy.toString() === userIdObject && (
             <TipTitle message="Edit">
               <CommunityBioEdit
-                currentUserId={JSON.stringify(userIdObject)}
+                currentUserId={userIdObject.toString()}
                 community={JSON.parse(JSON.stringify(community))}
               />
             </TipTitle>

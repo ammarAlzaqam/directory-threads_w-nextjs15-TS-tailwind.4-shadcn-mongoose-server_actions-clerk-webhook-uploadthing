@@ -27,6 +27,7 @@ export default function CommunityBioEdit({
               community={community}
               set={set}
             />
+            
           </div>
         </div>
       )}

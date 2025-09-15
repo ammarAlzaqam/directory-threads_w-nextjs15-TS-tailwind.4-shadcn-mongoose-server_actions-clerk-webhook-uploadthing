@@ -37,8 +37,7 @@ export default function CommunityEdit({
   community: { id, name, image, username, bio, createdBy },
   set,
 }: Props) {
-  if (createdBy !== currentUserId) return null;
-
+  if (createdBy.toString() !== currentUserId.toString()) return null;
   const [loading, setLoading] = useState(false);
   const path = usePathname();
 

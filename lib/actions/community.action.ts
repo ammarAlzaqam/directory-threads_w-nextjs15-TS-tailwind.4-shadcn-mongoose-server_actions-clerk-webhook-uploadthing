@@ -127,6 +127,7 @@ export async function updateCommunity({
 
     return updatedCommunity;
   } catch (error: any) {
+    console.log(error);
     throw new Error(`Failed to update community: ${error.message}`);
   }
 }
