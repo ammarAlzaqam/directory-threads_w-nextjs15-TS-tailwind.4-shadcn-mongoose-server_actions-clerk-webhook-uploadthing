@@ -189,7 +189,7 @@
   }
 
   .community-card_btn {
-    @apply rounded-lg bg-primary-500 px-5 py-1.5 text-small-regular !text-light-1;
+    @apply rounded-lg !bg-primary-500 px-5 py-1.5 text-small-regular !text-light-1;
   }
 
   /* thread card  */

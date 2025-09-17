@@ -2,7 +2,7 @@ import UserCard from "@/components/cards/UserCard";
 import Searchbar from "@/components/shared/Searchbar";
 import PaginationPage from "@/components/ui/pagination";
 import { fetchAllUsers } from "@/lib/actions/user.action";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 
 export default async function SearchPage({
   searchParams,
@@ -11,11 +11,11 @@ export default async function SearchPage({
 }) {
   const { pageNumber, query } = await searchParams;
 
-  const user = await currentUser();
-  if (!user) return null;
+  const { userId } = await auth();
+  if (!userId) return null;
 
   const { users, nofPages } = await fetchAllUsers({
-    userId: user.id,
+    userId: userId,
     pageNumber: parseInt(pageNumber),
     pageSize: 2,
     searchString: query,

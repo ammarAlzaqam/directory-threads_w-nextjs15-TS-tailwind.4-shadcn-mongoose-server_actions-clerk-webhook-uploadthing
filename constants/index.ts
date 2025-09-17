@@ -1,3 +1,5 @@
+import { UserRoundCheck, UserRoundX, X } from "lucide-react";
+
 export const sidebarLinks = [
   {
     imgURL: "/assets/home.svg",
@@ -41,4 +43,27 @@ export const communityTabs = [
   { value: "threads", label: "Threads", icon: "/assets/reply.svg" },
   { value: "members", label: "Members", icon: "/assets/members.svg" },
   { value: "requests", label: "Requests", icon: "/assets/request.svg" },
+];
+
+export const communityReqStatus = [
+  {
+    icon: "UserRoundCheck",
+    label: "Approve",
+    action: "approved",
+    theme: "text-green-800 shadow-sm shadow-green-800/80 dark:shadow-green-800/60",
+  },
+
+  {
+    icon: "UserRoundX",
+    label: "Reject",
+    action: "rejected",
+    theme: "text-orange-700 shadow-sm shadow-orange-700/80 dark:shadow-yellow-800/60",
+  },
+
+  {
+    icon: "X",
+    label: "Remove",
+    action: "remove",
+    theme: "text-red-800 shadow-sm shadow-red-800/80 dark:shadow-red-800/60",
+  },
 ];

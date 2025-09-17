@@ -19,6 +19,17 @@ const communitySchema = new mongoose.Schema({
       ref: "User",
     },
   ],
+  requests: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      status: {
+        type: String,
+        enum: ["pending", "approved", "rejected"],
+        default: "pending",
+      },
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
 });
 
 const Community =

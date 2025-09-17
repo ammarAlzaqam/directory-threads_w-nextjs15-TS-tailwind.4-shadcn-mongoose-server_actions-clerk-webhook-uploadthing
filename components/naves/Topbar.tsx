@@ -10,7 +10,7 @@ import {
   SignedOut,
   SignInButton,
   SignOutButton,
-  useUser,
+  useAuth,
 } from "@clerk/nextjs";
 import { Moon as DarkIcon, Sun as LightIcon } from "lucide-react";
 import Image from "next/image";
@@ -19,22 +19,17 @@ import { useEffect, useState } from "react";
 
 export default function Topbar() {
   const [userImg, setUserImg] = useState<any>(null);
-  const [isMount, setIsMount] = useState(false);
-  const { user, isLoaded } = useUser();
+  const { userId, isLoaded } = useAuth();
   const { darkMode, setDarkMode } = useTheme();
   useEffect(() => {
     async function getUserImg() {
-      if (user) {
-        const { image } = await fetchUser(user.id);
+      if (userId) {
+        const { image } = await fetchUser(userId);
         setUserImg(image);
       }
     }
     getUserImg();
-    setIsMount(true);
-  }, [isLoaded, user]);
-
-  if (!isLoaded || !isMount)
-    return <div className="topbar h-16 w-full bg-skeleton animate-pulse" />;
+  }, [isLoaded]);
 
   return (
     <nav className="topbar">

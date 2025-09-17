@@ -6,13 +6,60 @@ import Thread from "../models/thread.model";
 import User from "../models/user.model";
 import connectDB from "../mongoose";
 import { revalidatePath } from "next/cache";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
+
+//! Fetch community by id
+export async function fetchCommunity(communityId: string) {
+  try {
+    await connectDB();
+
+    const communityDetails = await Community.findOne({ id: communityId })
+      .populate([
+        "createdBy",
+        { path: "members", model: User, select: "name username image _id id" },
+      ])
+      .populate({
+        path: "threads",
+        model: Thread,
+        populate: [
+          {
+            path: "author",
+            model: User,
+            select: "name image id _id",
+          },
+          {
+            path: "children",
+            model: Thread,
+            populate: {
+              path: "author",
+              model: User,
+              select: "image name _id id",
+            },
+          },
+          {
+            path: "community",
+            model: Community,
+          },
+        ],
+      })
+      .populate({
+        path: "requests.user",
+        model: User,
+        select: "name username image id _id",
+      });
+
+    return communityDetails;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch community: ${error.message}`);
+  }
+}
 
 //! Fetch Communities
 interface FetchAllParams {
   pageNumber: number;
   pageSize: number;
   searchString: string;
-  sortBy: -1 | 1;
+  sortBy?: -1 | 1;
 }
 export async function fetchCommunities({
   pageNumber = 1,
@@ -34,7 +81,7 @@ export async function fetchCommunities({
       : {};
 
     const communities = await Community.find(query)
-      .sort({ members: sortBy })
+      .sort({ "members.length": sortBy })
       .skip(skipAmount)
       .limit(pageSize)
       .populate({ path: "members", model: User, select: "_id id name image" });
@@ -46,6 +93,141 @@ export async function fetchCommunities({
     return { communities, nofPages };
   } catch (error: any) {
     throw new Error(`Failed to fetch communities: ${error.message}`);
+  }
+}
+
+//! Make Request to join to community
+export async function requestToJoinCommunity(
+  communityId: string,
+  userId: string
+) {
+  try {
+    await connectDB();
+
+    const community = await Community.findById(communityId);
+    if (!community) throw new Error("community not found");
+
+    // check if already member
+    if (community.members.includes(userId))
+      throw new Error("user is already a member.");
+
+    // check if request already exists
+    const exists =
+      community.requests?.length > 0
+        ? community.requests?.find(
+            (req: any) => req.user.toString() === userId.toString()
+          )
+        : "";
+    if (exists) throw new Error("request already sent");
+
+    community.requests.push({ user: userId });
+    await community.save();
+  } catch (error: any) {
+    console.log(error);
+    throw new Error(
+      error.message || "Failed to make join request to community"
+    );
+  }
+}
+
+type Action = "remove" | "approved" | "rejected";
+interface Props {
+  communityId: string;
+  userId: string;
+  action: Action;
+  path: string;
+}
+//!handel community request
+export async function handelCommunityRequest({
+  communityId,
+  userId,
+  action,
+  path,
+}: Props) {
+  try {
+    await connectDB();
+    const clerk_client = await clerkClient();
+
+    const community = await Community.findById(communityId);
+    if (!community) throw new Error(`Community not found`);
+
+    const user = await User.findById(userId);
+
+    const request = community.requests.find(
+      (req: any) => req.user.toString() === userId.toString()
+    );
+    if (!request)
+      throw new Error(`User has no request to ${community.name} community`);
+
+    switch (action) {
+      case "remove": {
+        await Community.findByIdAndUpdate(communityId, {
+          $pull: { requests: { user: userId } },
+        });
+        break;
+      }
+
+      case "approved": {
+        await Community.findByIdAndUpdate(
+          communityId,
+          {
+            $set: { "requests.$[elem].status": action },
+            $addToSet: { members: userId },
+          },
+          {
+            arrayFilters: [{ "elem.user": userId }],
+            new: true,
+          }
+        );
+        await clerk_client.organizations.createOrganizationMembership({
+          organizationId: community.id,
+          userId: user.id,
+          role: "org:member",
+        });
+        break;
+      }
+
+      case "rejected": {
+        // request.status = action;
+
+        await Community.findByIdAndUpdate(
+          communityId,
+          {
+            $set: { "requests.$[elem].status": action },
+            $pull: { members: userId },
+          },
+          {
+            arrayFilters: [{ "elem.user": userId }],
+          }
+        );
+
+        const memberships =
+          await clerk_client.organizations.getOrganizationMembershipList({
+            organizationId: community.id,
+          });
+
+        const membership = memberships.data.find(
+          (m: any) => m.publicUserData?.userId === user.id
+        );
+
+        if (membership)
+          await clerk_client.organizations.deleteOrganizationMembership({
+            organizationId: community.id,
+            userId: user.id,
+          });
+        break;
+      }
+
+      default:
+        throw new Error(`This action not valid.`);
+    }
+
+    revalidatePath(path);
+  } catch (error: any) {
+    console.log(error);
+    throw new Error(
+      `Failed to ${action} user, ${error.message}` || `Failed to ${action} user`
+    );
   }
 }
 

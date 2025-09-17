@@ -2,8 +2,7 @@ import ThreadCard from "@/components/cards/ThreadCard";
 import PaginationPage from "@/components/ui/pagination";
 import { fetchPosts } from "@/lib/actions/thread.action";
 import { fetchUser } from "@/lib/actions/user.action";
-import { currentUser } from "@clerk/nextjs/server";
-import Image from "next/image";
+import { auth } from "@clerk/nextjs/server";
 
 export default async function App({
   searchParams,
@@ -15,8 +14,8 @@ export default async function App({
   if (threads.length === 0) {
     return <p className="no-result">No threads</p>;
   }
-  const user = await currentUser();
-  const userInfo = await fetchUser(user?.id || "");
+  const { userId } = await auth();
+  const userInfo = await fetchUser(userId || "");
   return (
     <main>
       <h1 className="text-heading1-bold mb-10">Home</h1>

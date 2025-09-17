@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Button } from "../ui/button";
 import TipTitle from "../ui/tooltip";
 import Link from "next/link";
 import CommunityBioEdit from "../shared/CommunityBioEdit";
@@ -12,6 +11,7 @@ type User = {
 
 interface Props {
   community: {
+    id: string;
     name: string;
     username: string;
     image: string;
@@ -27,11 +27,11 @@ export default function CommunityCard({ community, userIdObject }: Props) {
     <div className="px-4 py-5 bg-dark-3 w-full sm:w-[380px] rounded-lg">
       <div className="flex flex-col gap-5">
         {/*//! Info (image, text) */}
-        <div className="flex items-center gap-3">
+        <Link href={`/communities/${community.id}`} className="flex items-center gap-3">
           {/*//* Image */}
           <div className="relative w-12 h-12">
             <Image
-              src={community.image}
+              src={community.image || "/assets/community.svg"}
               alt={"community_img"}
               fill
               className="rounded-full object-cover"
@@ -44,7 +44,7 @@ export default function CommunityCard({ community, userIdObject }: Props) {
               @{community.username}
             </p>
           </div>
-        </div>
+        </Link>
 
         {/*//! Bio (text, edit button) */}
         <div className="flex items-center gap-2">
@@ -62,12 +62,12 @@ export default function CommunityCard({ community, userIdObject }: Props) {
         {/*//! Data (button, members) */}
         <div className="flex justify-between items-center">
           {/*//* view Button */}
-          <Button
-            size="sm"
-            className="!text-small-medium text-light-1 bg-primary-500"
+          <Link
+            href={`/communities/${community.id}`}            
+            className="community-card_btn"
           >
             View
-          </Button>
+          </Link>
 
           {/*//* members Images */}
           {community.members.length > 0 && community.members.length < 11 && (
@@ -83,7 +83,7 @@ export default function CommunityCard({ community, userIdObject }: Props) {
                     className="relative w-7 h-7"
                   >
                     <Image
-                      src={member.image}
+                      src={member.image || "/assets/user.svg"}
                       alt={"community_img"}
                       fill
                       className="rounded-full object-cover hover:z-30"

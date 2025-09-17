@@ -22,7 +22,7 @@ export async function createThread({
   try {
     await connectDB();
 
-    const community = await Community.findOne({ id: communityId }, { _id: 1 });
+    const community = await Community.findOne({ id: communityId }, { _id: 1, threads: 1 });
 
     const createThread = await Thread.create({
       text,
@@ -33,6 +33,11 @@ export async function createThread({
     await User.findByIdAndUpdate(author, {
       $push: { threads: createThread._id },
     });
+
+    if (community) {
+      community.threads.push(createThread._id);
+      await community.save();
+    }
 
     revalidatePath(path);
   } catch (error: any) {
@@ -195,10 +200,11 @@ export async function deleteThread(threadId: string, path: string) {
     );
 
     await Community.updateMany(
-      {_id: {$in: uniqueCommunityThreadsIds}}, {
-        $pull: {threads: { $in: descendantsThread}}
+      { _id: { $in: uniqueCommunityThreadsIds } },
+      {
+        $pull: { threads: { $in: descendantsThread } },
       }
-    )
+    );
 
     revalidatePath(path);
   } catch (error: any) {

@@ -2,7 +2,7 @@ import ThreadCard from "@/components/cards/ThreadCard";
 import Comment from "@/components/forms/Comment";
 import { fetchThreadById } from "@/lib/actions/thread.action";
 import { fetchUser } from "@/lib/actions/user.action";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 
 export default async function Page({
@@ -14,10 +14,10 @@ export default async function Page({
   const post = await fetchThreadById(id);
   if (!post) notFound();
 
-  const user = await currentUser();
-  if (!user) return null;
+  const { userId } = await auth();
+  if (!userId) return null;
 
-  const userInfo = await fetchUser(user.id);
+  const userInfo = await fetchUser(userId);
 
   return (
     <section className="relative flex flex-col">

@@ -166,6 +166,45 @@ export default function ConfirmDelete({
   );
 }
 
+export function Confirm({
+  children,
+  onConfirm,
+  confirmMsg = "Continue",
+  message = "It will be asked to join this community.",
+}: {
+  children: React.ReactNode;
+  onConfirm: () => void;
+  confirmMsg?: string;
+  message?: string | React.ReactNode;
+}) {
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogContent className="w-11/12 border-none shadow-accent-foreground bg-dark-1">
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogDescription className="max-xs:text-small-medium">
+            This action cannot be undone. {message}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => {
+              setOpen(false);
+              onConfirm();
+            }}
+          >
+            {confirmMsg}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 export {
   AlertDialog,
   AlertDialogPortal,

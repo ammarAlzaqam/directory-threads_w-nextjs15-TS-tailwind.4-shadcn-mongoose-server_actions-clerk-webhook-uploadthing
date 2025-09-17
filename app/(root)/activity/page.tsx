@@ -1,13 +1,17 @@
-import { fetchUser, fetchUserPosts, getActivities } from "@/lib/actions/user.action";
-import { currentUser } from "@clerk/nextjs/server";
+import {
+  fetchUser,
+  fetchUserPosts,
+  getActivities,
+} from "@/lib/actions/user.action";
+import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 
 export default async function ActivityPage() {
-  const user = await currentUser();
-  if (!user) return null;
+  const { userId } = await auth();
+  if (!userId) return null;
 
-  const userInfo = await fetchUser(user.id);
+  const userInfo = await fetchUser(userId);
 
   const activities = await getActivities(userInfo._id);
   return (
@@ -35,7 +39,9 @@ export default async function ActivityPage() {
             <p className="text-small-medium text-primary-500">
               {activity.author.name}
             </p>
-            <p className="text-small-medium line-clamp-1">replied to your thread</p>
+            <p className="text-small-medium line-clamp-1">
+              replied to your thread
+            </p>
           </Link>
         ))}
       </div>
