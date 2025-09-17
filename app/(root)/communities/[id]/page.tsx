@@ -53,23 +53,27 @@ export default async function ProfilePage({
 
                 <p className="max-sm:hidden">{tab.label}</p>
 
-                {/* {tab.label === "Threads" && (
+                {tab.label === "Threads" && (
                   <p className="bg-dark-4 rounded-sm px-2 py-1 text-tiny-medium text-light-2">
                     {communityDetails.threads.length}
                   </p>
-                )} */}
-
-                {communityDetails[tab.value].length > 0 && (
-                  <p className="bg-dark-4 rounded-sm px-2 py-1 text-tiny-medium text-light-2">
-                    {communityDetails[tab.value].length}
-                  </p>
                 )}
 
-                {/* {tab.label === "Members" && (
-                  <p className="bg-dark-4 rounded-sm px-2 py-1 text-tiny-medium text-light-2">
-                    {communityDetails.members.length}
-                  </p>
-                )} */}
+                {tab.label === "Members" &&
+                  communityDetails.members.length > 0 && (
+                    <p className="bg-dark-4 rounded-sm px-2 py-1 text-tiny-medium text-light-2">
+                      {communityDetails.members.length}
+                    </p>
+                  )}
+
+                {tab.label === "Requests" &&
+                  communityDetails.requests.length > 0 &&
+                  communityDetails.createdBy._id.toString() ===
+                    userInfo._id.toString() && (
+                    <p className="bg-dark-4 rounded-sm px-2 py-1 text-tiny-medium text-light-2">
+                      {communityDetails.requests.length}
+                    </p>
+                  )}
               </div>
             </TabsTrigger>
           ))}
