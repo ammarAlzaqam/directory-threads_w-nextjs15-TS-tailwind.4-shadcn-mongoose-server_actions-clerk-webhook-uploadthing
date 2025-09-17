@@ -13,6 +13,7 @@ import {
 } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 export default async function ProfilePage({
   params,
@@ -26,6 +27,7 @@ export default async function ProfilePage({
   if (!userId) return null;
 
   const userInfo = await fetchUser(userId);
+  if (!userInfo?.onboarded) redirect("/onboarding");
 
   const communityDetails = await fetchCommunity(communityId);
 
